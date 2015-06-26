@@ -1,5 +1,6 @@
-CONTACT_NAME = 'Raff' -- It can be a part of contacts name
-   MESSAGE_COUNT = 50000
+CONTACT_NAME = 'Fedr' -- It can be a part of contacts name
+MESSAGE_COUNT = 500
+DATABASE_FILE = 'db.sqlite3'
 
 function history_cb(extra, success, history)
    if success then
@@ -7,7 +8,7 @@ function history_cb(extra, success, history)
          if not m.service then -- Ignore Telegram service messages
             local out = m.out and 1 or 0 -- Cast boolean to integer
             if m.text == nil then -- No nil value
-                  m.text = ''
+               m.text = ''
             end
             local sql = [[
                   INSERT INTO messages
@@ -22,7 +23,7 @@ function history_cb(extra, success, history)
                         ]]
             if (m.media == nil or m.media == '') then
                sql = sql .. "NULL, NULL, NULL)"
-            elseif m.media.type == 'webpage' and not m.media.url == nil then
+            elseif m.media.type == 'webpage' and m.media.url ~= nil then
                sql = sql .. "'1','".. m.media.type .. "', '" .. m.media.url .. "')"
             else
                sql = sql .. "'1','".. m.media.type .. "', NULL)"
@@ -39,7 +40,7 @@ end
 function contacts_cb(extra, success, contacts)
    if success then
       for _,v in pairs(contacts) do
-         if string.find(v.print_name, CONTACT_NAME) then
+         if v.print_name ~= nil and string.find(v.print_name, CONTACT_NAME) then
             print(v.print_name)
             get_history(v.print_name, MESSAGE_COUNT, history_cb, history_extra)
          end
@@ -49,7 +50,7 @@ end
 
 function on_binlog_replay_end ()
    sqlite3 = require("lsqlite3")
-   db = sqlite3.open('db.sqlite3')
+   db = sqlite3.open(DATABASE_FILE)
 
    db:exec[[
          CREATE TABLE messages (
