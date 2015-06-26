@@ -1,13 +1,13 @@
-CONTACT_NAME = 'Raff'
-MESSAGE_COUNT = 50000
+CONTACT_NAME = 'Raff' -- It can be a part of contacts name
+   MESSAGE_COUNT = 50000
 
 function history_cb(extra, success, history)
    if success then
       for _,m in pairs(history) do
          if not m.service then -- Ignore Telegram service messages
-            local out = m.out and 1 or 0
-            if m.text == nil then
-               m.text = ''
+            local out = m.out and 1 or 0 -- Cast boolean to integer
+            if m.text == nil then -- No nil value
+                  m.text = ''
             end
             local sql = [[
                   INSERT INTO messages
