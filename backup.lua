@@ -37,7 +37,7 @@ function history_cb(extra, success, history)
    end
 end
 
-function dialog_cb(extra, success, dialog)
+function dialogs_cb(extra, success, dialog)
    if success then
       for _,d in pairs(dialog) do
          v = d.peer
@@ -68,7 +68,7 @@ function on_binlog_replay_end ()
                                );
           ]]
 
-   get_dialog_list(contacts_cb, contacts_extra)
+   get_dialog_list(dialogs_cb, contacts_extra)
 end
 
 function on_msg_receive (msg)
