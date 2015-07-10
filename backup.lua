@@ -37,9 +37,10 @@ function history_cb(extra, success, history)
    end
 end
 
-function contacts_cb(extra, success, contacts)
+function dialogs_cb(extra, success, dialog)
    if success then
-      for _,v in pairs(contacts) do
+      for _,d in pairs(dialog) do
+         v = d.peer
          if v.print_name ~= nil and string.find(v.print_name, CONTACT_NAME) then
             print(v.print_name)
             get_history(v.print_name, MESSAGE_COUNT, history_cb, history_extra)
@@ -67,7 +68,7 @@ function on_binlog_replay_end ()
                                );
           ]]
 
-   get_contact_list(contacts_cb, contacts_extra)
+   get_dialog_list(dialogs_cb, contacts_extra)
 end
 
 function on_msg_receive (msg)
@@ -87,5 +88,3 @@ end
 
 function on_get_difference_end ()
 end
-
-
