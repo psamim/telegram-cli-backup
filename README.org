@@ -7,4 +7,4 @@ $ telegram-cli -s backup.lua
 #+END_SRC
 * Requirements
 - [[https://github.com/vysheng/tg][telegram-cli]]
-- Lua lsqlite3 (can be installed by =$luarocks install lsqlite3=)
+- Lua lsqlite3 (can be installed by =$ luarocks install lsqlite3=)
