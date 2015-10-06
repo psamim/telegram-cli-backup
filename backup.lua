@@ -1,4 +1,5 @@
-CONTACT_NAME = 'Fedr' -- It can be a part of contacts name
+MODE = 'users' -- 'history' or 'users'
+CONTACT_NAME = 'Dmi' -- It can be a part of contacts name
 MESSAGE_COUNT = 500
 DATABASE_FILE = 'db.sqlite3'
 
@@ -14,9 +15,9 @@ function history_cb(extra, success, history)
                   INSERT INTO messages
                   (`from`, `to`, `text`, `out`, `date`, `message_id`, `media`, `media_type`,`url`)
                   VALUES (
-                     ']] .. m.from.print_name .. [[',
-                     ']] .. m.to.print_name .. [[',
-                     ']] .. m.text .. [[',
+                     ']] .. db:escape(m.from.print_name) .. [[',
+                     ']] .. db:escape(m.to.print_name) .. [[',
+                     ']] .. db:escape(m.text) .. [[',
                      ']] .. out .. [[',
                      ']] .. m.date .. [[',
                      ']] .. m.id .. [[',
@@ -29,11 +30,37 @@ function history_cb(extra, success, history)
                sql = sql .. "'1','".. m.media.type .. "', NULL)"
             end
             print(m.id)
-            -- require 'pl.pretty'.dump(m)
+            --require 'pl.pretty'.dump(m)
             -- print(sql)
-            db:exec(sql)
+            res = db:execute(sql)
+            -- print(heh)
          end
       end
+      print("done")
+   end
+end
+
+function user_cb(extra, success, user)
+   if success and user.print_name ~= 'deleted' then
+      if user.phone == nil then
+         user.phone = ''
+      end
+      if user.username == nil then
+         user.username = ''
+      end
+      local sql = [[
+            INSERT INTO users
+            (`id`, `name`, `username`, `phone`)
+            VALUES (
+               ']] .. user.id .. [[',
+               ']] .. db:escape(user.print_name) .. [[',
+               ']] .. user.username .. [[',
+               ']] .. user.phone .. [['
+               );
+                  ]]
+      -- print(sql)
+      res = db:execute(sql)
+      -- print(res)
    end
 end
 
@@ -43,17 +70,26 @@ function dialogs_cb(extra, success, dialog)
          v = d.peer
          if v.print_name ~= nil and string.find(v.print_name, CONTACT_NAME) then
             print(v.print_name)
-            get_history(v.print_name, MESSAGE_COUNT, history_cb, history_extra)
+            if (v.type == 'user') then
+               user_info(v.print_name, user_cb, history_extra)
+            else
+               chat_info(v.print_name, user_cb, history_extra)
+            end
+            if mode == 'history' then
+               get_history(v.print_name, MESSAGE_COUNT, history_cb, history_extra)
+            end
          end
       end
    end
 end
 
 function on_binlog_replay_end ()
-   sqlite3 = require("lsqlite3")
-   db = sqlite3.open(DATABASE_FILE)
+   sqlite3 = require("luasql.sqlite3")
+   --db = sqlite3.open(DATABASE_FILE)
+   driver = sqlite3.sqlite3()
+   db = driver:connect(DATABASE_FILE)
 
-   db:exec[[
+   res = db:execute[[
          CREATE TABLE messages (
             `id` INTEGER PRIMARY KEY,
             `from` TEXT,
@@ -68,7 +104,16 @@ function on_binlog_replay_end ()
                                );
           ]]
 
-   get_dialog_list(dialogs_cb, contacts_extra)
+   res = db:execute[[
+         CREATE TABLE users (
+            `id` INTEGER PRIMARY KEY,
+            `name` TEXT,
+            `username` TEXT,
+            `phone` TEXT
+                               );
+          ]]
+
+   res = get_dialog_list(dialogs_cb, contacts_extra)
 end
 
 function on_msg_receive (msg)
