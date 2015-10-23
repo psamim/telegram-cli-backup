@@ -75,7 +75,7 @@ function dialogs_cb(extra, success, dialog)
             else
                chat_info(v.print_name, user_cb, history_extra)
             end
-            if mode == 'history' then
+            if MODE == 'history' then
                get_history(v.print_name, MESSAGE_COUNT, history_cb, history_extra)
             end
          end
