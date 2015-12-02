@@ -100,7 +100,6 @@ function user_cb(extra, success, user)
 end
 
 function dialogs_cb(extra, success, dialog)
-   print("hello")
    if success then
       for _,d in pairs(dialog) do
          v = d.peer
