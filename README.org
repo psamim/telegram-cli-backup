@@ -10,4 +10,4 @@ $ telegram-cli -s backup.lua
 - lua
 
 And if writing to a sqlite database:
-- Lua lsqlite3 (only necan be installed by =$ luarocks install lsqlite3=)
+- Lua lsqlite3 (can be installed by =$ luarocks install lsqlite3=)
