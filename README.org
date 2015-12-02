@@ -1,10 +1,13 @@
 * telegram-cli-backup
-A simple and dirty lua script to backup Telegram messages into a sqlite database
+A simple and dirty lua script to backup Telegram messages into a CSV file or a sqlite database.
 * How
-Change first two lines of the script and set your contact name and message count. Then send the lua script to telegram-cli. Lua and lua sqlite3 library should be installed (via luarocks for example).
+Change first two lines of the script and set your contact name and message count. Then send the lua script to telegram-cli. If using CSV type only lua is needed, if writing to a sqlite database sqlite3 library should be installed (via luarocks for example).
 #+BEGIN_SRC sh
 $ telegram-cli -s backup.lua
 #+END_SRC
 * Requirements
 - [[https://github.com/vysheng/tg][telegram-cli]]
-- Lua lsqlite3 (can be installed by =$ luarocks install lsqlite3=)
+- lua
+
+And if writing to a sqlite database:
+- Lua lsqlite3 (only necan be installed by =$ luarocks install lsqlite3=)
