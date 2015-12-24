@@ -12,7 +12,11 @@ function writeCSV(path, data, sep)
    for i=1,#data do
       for j=1,#data[i] do
          if j>1 then file:write(sep) end
-         file:write(data[i][j])
+         if data[i][j] == nil then
+            file:write("")
+         else
+            file:write(data[i][j])
+         end
       end
       file:write('\n')
    end
