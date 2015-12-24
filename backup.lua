@@ -36,7 +36,6 @@ function history_cb(extra, success, history)
                if (m.media == nil or m.media == '') then
                   writeCSV(CSV_FILE_MESSAGES, {{m.from.print_name, m.to.print_name, m.text, out, m.date, m.id,'','',''}})
                elseif m.media.type == 'webpage' and m.media.url ~= nil then
-                  sql = sql .. "'1','".. m.media.type .. "', '" .. m.media.url .. "')"
                   writeCSV(CSV_FILE_MESSAGES, {{m.from.print_name, m.to.print_name, m.text, out, m.date, m.id,'1',m.media.type,m.media.url}})
                else
                   writeCSV(CSV_FILE_MESSAGES, {{m.from.print_name, m.to.print_name, m.text, out, m.date, m.id,'1',m.media.type,''}})
