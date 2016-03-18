@@ -32,21 +32,30 @@ function history_cb(extra, success, history)
                m.text = ''
             end
             
+            local fromName = 'DELETED_ACCOUNT'
+            if (m.from ~= nil) then
+               fromName = m.from.print_name
+            end
+            local toName = ''
+            if (m.to ~= nil) then
+               toName = m.to.print_name
+            end
+            
             if TYPE == 'csv' then
                if (m.media == nil or m.media == '') then
-                  writeCSV(CSV_FILE_MESSAGES, {{m.from.print_name, m.to.print_name, m.text, out, m.date, m.id,'','',''}})
+                  writeCSV(CSV_FILE_MESSAGES, {{fromName, toName, m.text, out, m.date, m.id,'','',''}})
                elseif m.media.type == 'webpage' and m.media.url ~= nil then
-                  writeCSV(CSV_FILE_MESSAGES, {{m.from.print_name, m.to.print_name, m.text, out, m.date, m.id,'1',m.media.type,m.media.url}})
+                  writeCSV(CSV_FILE_MESSAGES, {{fromName, toName, m.text, out, m.date, m.id,'1',m.media.type,m.media.url}})
                else
-                  writeCSV(CSV_FILE_MESSAGES, {{m.from.print_name, m.to.print_name, m.text, out, m.date, m.id,'1',m.media.type,''}})
+                  writeCSV(CSV_FILE_MESSAGES, {{fromName, toName, m.text, out, m.date, m.id,'1',m.media.type,''}})
                end
             elseif TYPE == 'sqlite' then
                local sql = [[
                   INSERT INTO messages
                   (`from`, `to`, `text`, `out`, `date`, `message_id`, `media`, `media_type`,`url`)
                   VALUES (
-                     ']] .. db:escape(m.from.print_name) .. [[',
-                     ']] .. db:escape(m.to.print_name) .. [[',
+                     ']] .. db:escape(fromName) .. [[',
+                     ']] .. db:escape(toName) .. [[',
                      ']] .. db:escape(m.text) .. [[',
                      ']] .. out .. [[',
                      ']] .. m.date .. [[',
